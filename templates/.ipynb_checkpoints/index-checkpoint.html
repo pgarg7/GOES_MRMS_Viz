@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GOES Radiances Viewer</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function updatePlot() {
+            var timestep = $('#timestep').val();
+            var channel = $('#channel').val();
+            var plotUrl = `/update_plot?timestep=${timestep}&channel=${channel}`;
+
+            $.get(plotUrl, function(data) {
+                $('#plot').attr('src', data);
+            }).fail(function() {
+                alert('An error occurred while updating the plot.');
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>GOES Radiances Viewer</h1>
+    <div>
+        <label for="timestep">Timestep:</label>
+        <input type="range" id="timestep" min="0" max="{{ n_times - 1 }}" step="1" value="0" oninput="updatePlot()">
+    </div>
+    <div>
+        <label for="channel">Channel:</label>
+        <input type="range" id="channel" min="0" max="3" step="1" value="0" oninput="updatePlot()">
+        <span id="channel-name">{{ channel_names[0] }}</span>
+    </div>
+    <div>
+        <img id="plot" src="" alt="Plot">
+    </div>
+    <script>
+        $('#channel').on('input', function() {
+            var channelNumber = parseInt($(this).val());
+            var channelName = {{ channel_names|tojson }};
+            $('#channel-name').text(channelName[channelNumber]);
+        });
+
+        // Initialize the plot with default values
+        updatePlot();
+    </script>
+</body>
+</html>

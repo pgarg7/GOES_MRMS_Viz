@@ -7,13 +7,10 @@
         function updatePlot() {
             var timestep = $('#timestep').val();
             var channel = $('#channel').val();
-            var plotUrl = `/GOES_MRMS_Viz/update_plot?timestep=${timestep}&channel=${channel}`;
+            var plotUrl = `/update_plot?timestep=${timestep}&channel=${channel}`;
+
             $.get(plotUrl, function(data) {
-                if (data.error) {
-                    alert('Error: ' + data.error);
-                } else {
-                    $('#plot').attr('src', 'data:image/png;base64,' + data.plot);
-                }
+                $('#plot').attr('src', data);
             }).fail(function() {
                 alert('An error occurred while updating the plot.');
             });
@@ -24,7 +21,7 @@
     <h1>GOES Radiances Viewer</h1>
     <div>
         <label for="timestep">Timestep:</label>
-        <input type="range" id="timestep" min="0" max="20763" step="1" value="0" oninput="updatePlot()">
+        <input type="range" id="timestep" min="0" max="99" step="1" value="0" oninput="updatePlot()">
     </div>
     <div>
         <label for="channel">Channel:</label>
@@ -37,10 +34,10 @@
     <script>
         $('#channel').on('input', function() {
             var channelNumber = parseInt($(this).val());
-            var channelName = {0: 'Channel 8', 1: 'Channel 9', 2: 'Channel 10', 3: 'Channel 13'};
+            var channelName = {"0": "Channel 8", "1": "Channel 9", "2": "Channel 10", "3": "Channel 13"};
             $('#channel-name').text(channelName[channelNumber]);
         });
-        
+
         // Initialize the plot with default values
         updatePlot();
     </script>
