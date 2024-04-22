@@ -7,7 +7,7 @@
         function updatePlot() {
             var timestep = $('#timestep').val();
             var channel = $('#channel').val();
-            var plotUrl = `/update_plot?timestep=${timestep}&channel=${channel}`;
+            var plotUrl = `/GOES_MRMS_Viz/update_plot?timestep=${timestep}&channel=${channel}`;
             $.get(plotUrl, function(data) {
                 if (data.error) {
                     alert('Error: ' + data.error);
@@ -37,7 +37,7 @@
     <script>
         $('#channel').on('input', function() {
             var channelNumber = parseInt($(this).val());
-            var channelName = {0: &#39;Channel 8&#39;, 1: &#39;Channel 9&#39;, 2: &#39;Channel 10&#39;, 3: &#39;Channel 13&#39;};
+            var channelName = {0: 'Channel 8', 1: 'Channel 9', 2: 'Channel 10', 3: 'Channel 13'};
             $('#channel-name').text(channelName[channelNumber]);
         });
         
