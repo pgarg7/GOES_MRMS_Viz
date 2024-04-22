@@ -35,62 +35,45 @@ channel_names = {
 def display_images(timestep, channel):
     with lock:
         fig = plt.figure(figsize=(14, 5))
-
         proj = ccrs.PlateCarree()
         extent = [-125, -40, 24, 50]
-
+        
         ax1 = fig.add_subplot(1, 2, 1, projection=proj)
         im1 = ax1.imshow(input_array[timestep, channel], cmap='turbo', extent=extent, transform=proj)
         ax1.set_title(f"GOES Radiances - Timestep: {timestep}, Channel: {channel_names[channel]}")
         ax1.coastlines()
         g1 = ax1.gridlines(draw_labels=True)
         g1.top_labels = g1.right_labels = False
-
         cbar1 = plt.colorbar(im1, ax=ax1, fraction=0.046, pad=0.09, orientation='horizontal')
         cbar1.ax.tick_params(labelsize=8)
-
+        
         ax2 = fig.add_subplot(1, 2, 2, projection=proj)
         im2 = ax2.imshow(output_array[timestep], cmap='pyart_LangRainbow12', extent=extent, transform=proj)
         ax2.set_title(f"MRMS Composite Ref - Timestep: {timestep}")
         ax2.coastlines()
         g2 = ax2.gridlines(draw_labels=True)
         g2.top_labels = g2.right_labels = False
-
         cbar2 = plt.colorbar(im2, ax=ax2, fraction=0.046, pad=0.09, orientation='horizontal')
         cbar2.ax.tick_params(labelsize=8)
-
+        
         plt.tight_layout()
-
+        
+        # Save the plot to a BytesIO buffer
         img_buffer = io.BytesIO()
         plt.savefig(img_buffer, format='png')
         img_buffer.seek(0)
+        
+        # Convert the image buffer to base64-encoded string
         img_base64 = base64.b64encode(img_buffer.getvalue()).decode('utf-8')
+        
         plt.close(fig)
-
-    return img_base64
+        
+        return img_base64
 
 @app.route('/update_plot')
 def update_plot():
-    timestep = request.args.get('timestep')
-    channel = request.args.get('channel')
-    
-    if timestep is None or channel is None:
-        # Return a default plot image if timestep or channel is missing
-        default_timestep = 0
-        default_channel = 0
-        plot_data = display_images(default_timestep, default_channel)
-        return jsonify({'plot': plot_data})
-    
-    try:
-        timestep = int(timestep)
-        channel = int(channel)
-    except ValueError:
-        # Return a default plot image if timestep or channel is invalid
-        default_timestep = 0
-        default_channel = 0
-        plot_data = display_images(default_timestep, default_channel)
-        return jsonify({'plot': plot_data})
-    
+    timestep = request.args.get('timestep', default=0, type=int)
+    channel = request.args.get('channel', default=0, type=int)
     plot_data = display_images(timestep, channel)
     return jsonify({'plot': plot_data})
 
