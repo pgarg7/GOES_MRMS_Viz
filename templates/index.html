@@ -7,13 +7,9 @@
         function updatePlot() {
             var timestep = $('#timestep').val();
             var channel = $('#channel').val();
-            var plotUrl = `/update_plot?timestep=${timestep}&channel=${channel}`;
+            var img_filename = `static/images/timestep_${timestep}_channel_${channel}.png`;
 
-            $.get(plotUrl, function(data) {
-                $('#plot').attr('src', data);
-            }).fail(function() {
-                alert('An error occurred while updating the plot.');
-            });
+            $('#plot').attr('src', img_filename);
         }
     </script>
 </head>

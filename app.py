@@ -10,6 +10,7 @@ from flask_frozen import Freezer
 import glob
 import pyart
 import io
+from flask import send_from_directory
 
 app = Flask(__name__)
 freezer = Freezer(app)
@@ -72,12 +73,12 @@ def display_images(timestep, channel):
 #        with open(img_filename, 'wb') as f:
 #            f.write(base64.b64decode(img_base64))
 
-@app.route('/update_plot', methods=['GET'])
-def update_plot():
-    timestep = request.args.get('timestep', default=0, type=int)
-    channel = request.args.get('channel', default=0, type=int)
-    img_filename = f'static/images/timestep_{timestep}_channel_{channel}.png'
-    return send_file(img_filename, mimetype='image/png')
+#@app.route('/update_plot')
+#def update_plot():
+#    timestep = request.args.get('timestep', default=0, type=int)
+ #   channel = request.args.get('channel', default=0, type=int)
+#    img_filename = f'static/images/timestep_{timestep}_channel_{channel}.png'
+#    return send_from_directory(app.static_folder, img_filename, mimetype='image/png')
 
 @app.route('/', methods=['GET'])
 def index():
@@ -85,9 +86,9 @@ def index():
 
 @freezer.register_generator
 def url_generator():
-    for timestep in range(n_times):
-        for channel in range(4):
-            yield 'update_plot', {'timestep': timestep, 'channel': channel}
+    # Generate URLs for the index route
+    yield '/'
+
 
 if __name__ == '__main__':
     freezer.freeze()
