@@ -72,17 +72,14 @@ def display_images(timestep, channel):
 #        with open(img_filename, 'wb') as f:
 #            f.write(base64.b64decode(img_base64))
 
-@app.route('/update_plot')
+@app.route('/update_plot', methods=['GET'])
 def update_plot():
-    timestep = 0
-    channel = 0
-    if request:
-        timestep = request.args.get('timestep', default=0, type=int)
-        channel = request.args.get('channel', default=0, type=int)
+    timestep = request.args.get('timestep', default=0, type=int)
+    channel = request.args.get('channel', default=0, type=int)
     img_filename = f'static/images/timestep_{timestep}_channel_{channel}.png'
     return send_file(img_filename, mimetype='image/png')
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return render_template('index.html', n_times=n_times, channel_names=channel_names)
 

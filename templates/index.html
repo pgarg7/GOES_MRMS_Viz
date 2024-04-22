@@ -7,7 +7,7 @@
         function updatePlot() {
             var timestep = $('#timestep').val();
             var channel = $('#channel').val();
-            var plotUrl = `/GOES_MRMS_Viz/update_plot?timestep=${timestep}&channel=${channel}`;
+            var plotUrl = `/update_plot?timestep=${timestep}&channel=${channel}`;
 
             $.get(plotUrl, function(data) {
                 $('#plot').attr('src', data);
